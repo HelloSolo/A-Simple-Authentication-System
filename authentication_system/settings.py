@@ -141,3 +141,9 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
 }
+
+DJOSER = {
+    "SERIALIZERS": {"user_create": "core.serializers.UserCreateSerializer"},
+}
+
+AUTHENTICATION_BACKENDS = ["core.authentication_backend.ModelBackend"]
