@@ -130,6 +130,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+############################################################################################
+
 AUTH_USER_MODEL = "core.User"
 
 REST_FRAMEWORK = {
@@ -144,6 +146,17 @@ SIMPLE_JWT = {
 
 DJOSER = {
     "SERIALIZERS": {"user_create": "core.serializers.UserCreateSerializer"},
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "ACTIVATION_URL": "core/activate/{uid}/{token}",
+    "LOGIN_FIELD": "email",
 }
 
 AUTHENTICATION_BACKENDS = ["core.authentication_backend.ModelBackend"]
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_USER = ""
+EMAIL_PORT = 2525
+DEFAULT_FROM_EMAIL = "from@auth_sys.com"
