@@ -7,7 +7,7 @@ from rest_framework import status
 class UserViewset(BaseUserViewset):
     """
     User Account Activation, making the activation action(method)
-    accept post request.
+    accept post request
     """
 
     def get_serializer(self, *args, **kwargs):
