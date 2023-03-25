@@ -148,9 +148,9 @@ DJOSER = {
     "SERIALIZERS": {"user_create": "core.serializers.UserCreateSerializer"},
     "LOGIN_FIELD": "email",
     "SEND_ACTIVATION_EMAIL": True,
-    "ACTIVATION_URL": "core/activate/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",  # need to add link to frontend page
     "SEND_CONFIRMATION_EMAIL": True,
-    "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",  # need to add link to frontend page
 }
 
 AUTHENTICATION_BACKENDS = ["core.authentication_backend.ModelBackend"]
