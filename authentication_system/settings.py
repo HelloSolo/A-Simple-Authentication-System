@@ -151,6 +151,7 @@ DJOSER = {
     "ACTIVATION_URL": "activate/{uid}/{token}",  # need to add link to frontend page
     "SEND_CONFIRMATION_EMAIL": True,
     "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",  # need to add link to frontend page
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
 }
 
 AUTHENTICATION_BACKENDS = ["core.authentication_backend.ModelBackend"]
