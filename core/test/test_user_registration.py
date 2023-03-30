@@ -6,9 +6,8 @@ from django.core import mail
 
 @pytest.mark.django_db
 class TestUserRegistration:
-    def test_user_registion_valid_data(self):
-        client = APIClient()
-        response = client.post(
+    def test_user_registion_valid_data(self, api_client):
+        response = api_client.post(
             "/auth/users/",
             {
                 "email": "test_user@domain.com",
@@ -87,3 +86,17 @@ class TestUserRegistration:
         response = client.post("/auth/users/activation/", {"uid": "", "token": ""})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_resend_activation_email(self):
+        user = {
+            "email": "test_user@domain.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "qpdkri1230",
+        }
+
+        client = APIClient()
+        client.post(
+            "/auth/users/",
+            user,
+        )
