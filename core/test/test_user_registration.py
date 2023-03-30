@@ -4,25 +4,40 @@ from rest_framework.test import APIClient
 from django.core import mail
 
 
+@pytest.fixture
+def create_user(api_client):
+    def do_create_user(
+        data={
+            "email": "test_user@domain.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "qpdkri1230",
+        }
+    ):
+        return api_client.post("/auth/users/", data)
+
+    return do_create_user
+
+
+@pytest.fixture
+def activate_user(api_client, create_user):
+    def do_activate_user(data):
+        create_user()
+
+        return api_client.post("/auth/users/activation/", data)
+
+    return do_activate_user
+
+
 @pytest.mark.django_db
 class TestUserRegistration:
-    def test_user_registion_valid_data(self, api_client):
-        response = api_client.post(
-            "/auth/users/",
-            {
-                "email": "test_user@domain.com",
-                "first_name": "Test",
-                "last_name": "User",
-                "password": "qpdkri1230",
-            },
-        )
+    def test_user_registion_valid_data(self, create_user):
+        response = create_user()
 
         assert response.status_code == status.HTTP_201_CREATED
 
-    def test_user_registration_invalid_password(self):
-        client = APIClient()
-        response = client.post(
-            "/auth/users/",
+    def test_user_registration_invalid_password(self, create_user):
+        response = create_user(
             {
                 "email": "test_user@domain.com",
                 "first_name": "Test",
@@ -33,10 +48,8 @@ class TestUserRegistration:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_user_registration_invalid_email(self):
-        client = APIClient()
-        response = client.post(
-            "/auth/users/",
+    def test_user_registration_invalid_email(self, create_user):
+        response = create_user(
             {
                 "email": "",
                 "first_name": "Test",
@@ -47,43 +60,22 @@ class TestUserRegistration:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_if_activation_email_is_sent(self):
-        client = APIClient()
-        response = client.post(
-            "/auth/users/",
-            {
-                "email": "test_user@domain.com",
-                "first_name": "Test",
-                "last_name": "User",
-                "password": "qpdkri1230",
-            },
-        )
+    def test_if_activation_email_is_sent(self, create_user):
+        create_user()
 
         assert len(mail.outbox) == 1
 
-    def test_activation_link_in_email(self):
-        user = {
-            "email": "test_user@domain.com",
-            "first_name": "Test",
-            "last_name": "User",
-            "password": "qpdkri1230",
-        }
-
-        client = APIClient()
-        client.post(
-            "/auth/users/",
-            user,
-        )
+    def test_activation_link_in_email(self, create_user, activate_user):
+        create_user()
         uid, token = [l for l in mail.outbox[0].body.splitlines() if "/activate/" in l][
             0
         ].split("/")[-2:]
-        response = client.post("/auth/users/activation/", {"uid": uid, "token": token})
+        response = activate_user({"uid": uid, "token": token})
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    def test_activation_link_with_invalid_token_uid(self):
-        client = APIClient()
-        response = client.post("/auth/users/activation/", {"uid": "", "token": ""})
+    def test_activation_link_with_invalid_token_uid(self, activate_user):
+        response = activate_user({"uid": "", "token": ""})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
