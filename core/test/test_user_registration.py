@@ -3,21 +3,6 @@ from rest_framework import status
 from django.core import mail
 
 
-@pytest.fixture
-def create_user(api_client):
-    def do_create_user(
-        data={
-            "email": "test_user@domain.com",
-            "first_name": "Test",
-            "last_name": "User",
-            "password": "qpdkri1230",
-        }
-    ):
-        return api_client.post("/auth/users/", data)
-
-    return do_create_user
-
-
 @pytest.mark.django_db
 class TestUserRegistration:
     def test_user_registion_valid_data(self, create_user):
