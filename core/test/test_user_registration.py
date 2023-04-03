@@ -1,6 +1,5 @@
 import pytest
 from rest_framework import status
-from rest_framework.test import APIClient
 from django.core import mail
 
 
@@ -79,16 +78,9 @@ class TestUserRegistration:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_resend_activation_email(self):
-        user = {
-            "email": "test_user@domain.com",
-            "first_name": "Test",
-            "last_name": "User",
-            "password": "qpdkri1230",
-        }
-
-        client = APIClient()
-        client.post(
-            "/auth/users/",
-            user,
+    def test_resend_activation_email(self, api_client, create_user):
+        create_user()
+        api_client.post(
+            "/auth/users/resend_activation/", {"email": "test_user@domain.com"}
         )
+        assert len(mail.outbox) == 2  # one for email activation, the other for resend
