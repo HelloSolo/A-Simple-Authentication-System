@@ -3,6 +3,16 @@ from rest_framework import status
 from django.core import mail
 
 
+@pytest.fixture
+def activate_user(api_client, create_user):
+    def do_activate_user(data):
+        create_user()
+
+        return api_client.post("/auth/users/activation/", data)
+
+    return do_activate_user
+
+
 @pytest.mark.django_db
 class TestUserRegistration:
     def test_user_registion_valid_data(self, create_user):

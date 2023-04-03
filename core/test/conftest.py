@@ -20,13 +20,3 @@ def create_user(api_client):
         return api_client.post("/auth/users/", data)
 
     return do_create_user
-
-
-@pytest.fixture
-def activate_user(api_client, create_user):
-    def do_activate_user(data):
-        create_user()
-
-        return api_client.post("/auth/users/activation/", data)
-
-    return do_activate_user
