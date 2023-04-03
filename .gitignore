@@ -1,3 +1,5 @@
 env
 *.pyc
 playground
+.env
+temp*.py
