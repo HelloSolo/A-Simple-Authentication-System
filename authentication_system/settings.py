@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "playground",
     "core",
     "userProfile",
+    "authentication",
 ]
 
 MIDDLEWARE = [
@@ -154,7 +155,7 @@ DJOSER = {
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
 }
 
-AUTHENTICATION_BACKENDS = ["core.authentication_backend.ModelBackend"]
+AUTHENTICATION_BACKENDS = ["authentication.authentication_backend.ModelBackend"]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "localhost"
