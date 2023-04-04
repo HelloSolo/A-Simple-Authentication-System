@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "djoser",
+    "social_django",
+    "corsheaders",
     "playground",
     "core",
     "userProfile",
@@ -49,6 +51,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -69,6 +73,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -146,6 +152,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
 }
 
+WHITELIST = ["http://localhost:8000/accounts/profile/"]
+
 DJOSER = {
     "SERIALIZERS": {"user_create": "core.serializers.UserCreateSerializer"},
     "LOGIN_FIELD": "email",
@@ -154,9 +162,19 @@ DJOSER = {
     "SEND_CONFIRMATION_EMAIL": True,
     "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",  # need to add link to frontend page
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": WHITELIST,
 }
 
-AUTHENTICATION_BACKENDS = ["authentication.authentication_backend.ModelBackend"]
+AUTHENTICATION_BACKENDS = (
+    "core.authentication_backend.ModelBackend",
+    "social_core.backends.google.GoogleOAuth2",
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = (
+    "562371759519-e2cq1uhmg309b37e0og3k61el3pb60ka.apps.googleusercontent.com"
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "localhost"
