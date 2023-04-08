@@ -42,6 +42,9 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
+    auth_provider = models.CharField(
+        max_length=255, blank=False, null=False, default="email"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
