@@ -1,12 +1,38 @@
+import os
 import pytest
 from rest_framework import status
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-@pytest.mark.db_django
+@pytest.fixture
+def get_token(api_client):
+    def do_get_token(credential):
+        return api_client.post("/auth/social/google/", {"credential": credential})
+
+    return do_get_token
+
+
+@pytest.mark.django_db
 class TestSocialAuthentication:
-    def test_social_auth_with_valid_auth_token(self, api_client):
-        auth_token = ""
+    def test_social_auth_with_valid_credential(self, get_token):
+        credential = os.environ.get("GOOGLE_CREDENTIAL")
 
-        response = api_client.post("/auth/social/google/", auth_token)
+        response = get_token(credential)
 
-        assert response.status_code == status.HTTP_201_CREATED
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_social_auth_with_invalid_credential(self, get_token):
+        credential = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk2OTcxODA4Nzk2ODI5YTk3MmU3OWE5ZDFhOWZmZjExY2Q2MWIxZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2ODEzNzg0MzAsImF1ZCI6IjU2MjM3MTc1OTUxOS1lMmNxMXVobWczMDliMzdlMG9nM2s2MWVsM3BiNjBrYS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwMTg0MDUyNjA1NzU22zM3MTg5MCIsImVtYWlsIjoib2x1c2VndW5kMzBAZ21haMmuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF6cCI6IjU2MjM3MTc1OTUxOS1lMmNxMXVobWczMDliMzdlMG9nM2s2MWVsM3BiNjBrYS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsIm5hbWUiOiJEYXZpZCBPbHVzZWd1biIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BR05teXhiLW51SEFzVDlRaS1EaGFqb1B6bVhhRW94YXFCc3dPSXVRNEtWUD1zOTYtYyIsImdpdmVuX25hbWUiOiJEYXZpZCIsImZhbWlseV9uYW1lIjoiT2x1c2VndW4iLCJpYXQiOjE2ODEzNzg3MzAsImV4cCI6MTY4MTM4MjMzMCwianRpIjoiY2MwMDhmNTRmYWU4NDdhODUzYTg4YzFiMmNmZDQ5MjhiYzViMTZhMSJ9.DWsbJd1BCxUZlvQsHNU5pcFJ58pGkoqW7QJm_Xivt1At6nafzxjBZNQSiU7O4SUpExD9y9WQ2q-aBA-6AJnXm6qcDTdv4WvfK1GUF8C5lFuHGZQMLco4ZprTNWIQJmWjy3gyud7CAqsd9NMjuKraTcgEEm-u-5R1JW_SwQVcpd6ogygx2a3Gnuxf5J2Q4wo-lsFOmKP5AIN0ZXo9V5ubTZbvvkYLjMjrsP8I0BUses6Z0ZuQEQeUOhDErMId7LhoW0zrLstQfpA_aeOHEKhI88SqYaHq7RIgRQqKFxZCiC6ihBWYpzqhIQvKlQlz_em2kb4LgWA7a03dzR0a3f2VHw"
+
+        response = get_token(credential)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_social_with_illegally_generated_credential(self, get_token):
+        credential = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFjZGEzNjBmYjM2Y2QxNWZmODNhZjgzZTE3M2Y0N2ZmYzM2ZDExMWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTc2NjMxMjIxMjgyMzc0MTE1NTAiLCJlbWFpbCI6ImRhdmlkYWxpbWkxNDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJHa0FrZS1SRHN0cWp5NDlXRkhoWE1BIiwibmFtZSI6IkRhdmlkIEFsaW1pIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FHTm15eGJvMDVzc09iZzREZ0NmODEtVG5fbnQwb3lQbHJQUTV5YU9PYlFpNWc9czk2LWMiLCJnaXZlbl9uYW1lIjoiRGF2aWQiLCJmYW1pbHlfbmFtZSI6IkFsaW1pIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE2ODEzODMyNDAsImV4cCI6MTY4MTM4Njg0MH0.Pkn_F2xkSaxd1-xzxJKl5T6C6Xh5r526Y77u6Xx3fIgn34py9PapUPL6u-yB_FyOcQggKB5agJHyOm-fqYdUSwK73D2Mc6SmLQ7-SgF6dz4I1rEthGSoJxzmlQYwAdCh2RCz3EmcpDhYiN6xjiZgvxqWkWlzRAxICF5f14Gos3oJgOYASZdSfDyAxbrMXhPMzPhrYfOgjjFU6-OtHt3ytnlL_3QUSJKHLC6pEA6wV4Qw5bM02BwG3w3F7nK9JW1VomX2J_SjDPEpcpBY1ypgbi_TQLUDPcT_r5einn3a_gfDGMhJU1lTBiKr7TcEOo4JIvloui-bZl7ziBs3X_kBtA"
+
+        response = get_token(credential)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
