@@ -2,5 +2,6 @@ env
 *.pyc
 playground
 .env
-temp*.py
+temp_files
 env*
+.vscode
