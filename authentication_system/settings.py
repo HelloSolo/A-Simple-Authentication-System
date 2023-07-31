@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "corsheaders",
+    "drf_yasg",
     "playground",
     "core",
     "userProfile",
@@ -88,7 +89,7 @@ DATABASES = {
         "NAME": "auth_system_django",
         "HOST": "localhost",
         "USER": "root",
-        "PASSWORD": "Underw@ter",
+        "PASSWORD": "Underw@t5r",
     }
 }
 
