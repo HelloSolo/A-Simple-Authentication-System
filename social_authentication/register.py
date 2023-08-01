@@ -1,11 +1,8 @@
-import os
-from dotenv import load_dotenv
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
-
-load_dotenv()
 
 
 def get_token_for_social_user(user):
@@ -19,9 +16,7 @@ def register_social_user(provider, email, first_name, last_name):
 
     if filtered_user_by_email.exists():
         if provider == filtered_user_by_email[0].auth_provider:
-            registered_user = authenticate(
-                email=email, password=os.environ.get("SECRET_KEY")
-            )
+            registered_user = authenticate(email=email, password=settings.DEFAULT_KEY)
 
             return get_token_for_social_user(
                 registered_user
@@ -34,7 +29,7 @@ def register_social_user(provider, email, first_name, last_name):
     else:
         user_data = {
             "email": email,
-            "password": os.environ.get("SECRET_KEY"),
+            "password": settings.DEFAULT_KEY,
             "first_name": first_name,
             "last_name": last_name,
         }
@@ -43,6 +38,6 @@ def register_social_user(provider, email, first_name, last_name):
         user.auth_provider = provider
         user.save()
 
-        new_user = authenticate(email=email, password=os.environ.get("SECRET_KEY"))
+        new_user = authenticate(email=email, password=settings.DEFAULT_KEY)
 
         return get_token_for_social_user(new_user)

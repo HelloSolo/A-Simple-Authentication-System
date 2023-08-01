@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+# Imports all enviroment variables
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,7 +94,7 @@ DATABASES = {
         "NAME": "auth_system_django",
         "HOST": "localhost",
         "USER": "root",
-        "PASSWORD": "Underw@t5r",
+        "PASSWORD": os.environ.get("DB_KEY"),
     }
 }
 
@@ -150,6 +155,9 @@ SIMPLE_JWT = {
 }
 
 SOCIAL_LOGIN_VALIDITY_PERIOD = 100000000000000000000000
+CLIENTID = os.environ.get("CLIENTID")
+DEFAULT_KEY = os.environ.get("SECRET_KEY")
+GOOGLE_CREDENTIAL = os.environ.get("GOOGLE_CREDENTIAL")
 
 
 DJOSER = {

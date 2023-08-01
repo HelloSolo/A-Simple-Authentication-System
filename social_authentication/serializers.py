@@ -1,11 +1,8 @@
-import os
-from dotenv import load_dotenv
+from django.conf import settings
 from rest_framework import serializers
 from . import google
 from .register import register_social_user
 from rest_framework.exceptions import AuthenticationFailed
-
-load_dotenv()
 
 
 class GoogleAuthSerializer(serializers.Serializer):
@@ -20,8 +17,8 @@ class GoogleAuthSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "The token is invalid or expired. Please login again"
             )
-        if user_data["aud"] != os.environ.get(
-            "CLIENTID"
+        if (
+            user_data["aud"] != settings.CLIENTID
         ):  # check if the credential was generated using our app
             raise AuthenticationFailed(
                 "oops, invalid token or your token cannot authorized by this app "
