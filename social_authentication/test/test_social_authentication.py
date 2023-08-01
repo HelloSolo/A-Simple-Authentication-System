@@ -1,9 +1,6 @@
-import os
 import pytest
+from django.conf import settings
 from rest_framework import status
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 @pytest.fixture
@@ -17,7 +14,7 @@ def get_token(api_client):
 @pytest.mark.django_db
 class TestSocialAuthentication:
     def test_social_auth_with_valid_credential(self, get_token):
-        credential = os.environ.get("GOOGLE_CREDENTIAL")
+        credential = settings.GOOGLE_CREDENTIAL
 
         response = get_token(credential)
 
@@ -35,4 +32,4 @@ class TestSocialAuthentication:
 
         response = get_token(credential)
 
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code == (status.HTTP_401_UNAUTHORIZED)
