@@ -149,6 +149,9 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
 }
 
+SOCIAL_LOGIN_VALIDITY_PERIOD = 100000000000000000000000
+
+
 DJOSER = {
     "SERIALIZERS": {"user_create": "core.serializers.UserCreateSerializer"},
     "LOGIN_FIELD": "email",

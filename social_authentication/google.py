@@ -1,4 +1,6 @@
 from google.auth import jwt
+from datetime import datetime
+from django.conf import settings
 
 
 class Google:
@@ -17,7 +19,10 @@ class Google:
                 "https://accounts.google.com" in idinfo["iss"]
                 and True == idinfo["email_verified"]
                 and "gmail.com" in idinfo["email"]
+                and datetime.now().timestamp() - idinfo["iat"]
+                < settings.SOCIAL_LOGIN_VALIDITY_PERIOD
             ):  # checks if the issuer of the token is google and the email is verified
                 return idinfo
+
         except:
             return "The token is either invalid or has expired"
