@@ -4,7 +4,7 @@ from rest_framework import status
 
 
 @pytest.fixture
-def get_token(api_client):
+def get_google_token(api_client):
     def do_get_token(credential):
         return api_client.post("/auth/social/google/", {"credential": credential})
 
@@ -12,7 +12,7 @@ def get_token(api_client):
 
 
 @pytest.mark.django_db
-class TestSocialAuthentication:
+class TestGoogleSocialAuthentication:
     def test_social_auth_with_valid_credential(self, get_token):
         credential = settings.GOOGLE_CREDENTIAL
 
