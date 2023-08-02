@@ -2,8 +2,34 @@ from django.conf import settings
 from rest_framework import serializers
 from . import google
 from . import facebook
+from . import twitter
 from .register import register_social_user
 from rest_framework.exceptions import AuthenticationFailed
+
+
+class TwitterAuthSerializer(serializers.Serializer):
+    access_token_key = serializers.CharField()
+    access_token_secret = serializers.CharField()
+
+    def validate(self, attrs):
+        access_token_key = attrs.get("access_token_key")
+        access_token_secret = attrs.get("access_token_secret")
+
+        user_info = twitter.TwitterAuthTokenVerification.validate_twitter_auth_tokens(
+            access_token_key, access_token_secret
+        )
+
+        try:
+            email = user_info["email"]
+            first_name = user_info["name"].split(" ")[0]
+            last_name = user_info["name"].split(" ")[1]
+            provider = "twitter"
+
+            return register_social_user(provider, email, first_name, last_name)
+        except:
+            raise serializers.ValidationError(
+                "This token is invalid or expired, please login again"
+            )
 
 
 class FacebookAuthSerializer(serializers.Serializer):
@@ -22,8 +48,6 @@ class FacebookAuthSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "This token is invalid or expired, please login again"
             )
-
-    pass
 
 
 class GoogleAuthSerializer(serializers.Serializer):
