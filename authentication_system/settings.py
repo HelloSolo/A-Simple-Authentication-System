@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "playground",
     "core",
-    "userProfile",
     "authentication",
     "social_authentication",
 ]
