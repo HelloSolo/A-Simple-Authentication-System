@@ -12,7 +12,7 @@ A simple authentication simple that also supports social logins.
 
 ## Creating a User Account
 Here is a demo code for interacting with the api to create a user account.
-```
+```Javascript
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 myHeaders.append("Accept", "application/json");
