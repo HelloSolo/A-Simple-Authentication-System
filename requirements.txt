@@ -12,6 +12,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==39.0.2
 defusedxml==0.7.1
+distlib==0.3.7
 Django==4.1.7
 django-cors-headers==3.14.0
 django-templated-mail==1.1.1
@@ -21,6 +22,7 @@ djoser==2.1.0
 drf-yasg==1.21.7
 exceptiongroup==1.1.1
 facebook-sdk==3.1.0
+filelock==3.12.4
 future==0.18.3
 google-api-core==2.11.0
 google-api-python-client==2.84.0
@@ -40,7 +42,8 @@ oauthlib==3.2.2
 packaging==23.0
 pathspec==0.11.0
 Pillow==9.4.0
-platformdirs==3.1.0
+pipenv==2023.9.8
+platformdirs==3.10.0
 pluggy==1.0.0
 protobuf==4.22.1
 pyasn1==0.4.8
@@ -67,3 +70,4 @@ tomli==2.0.1
 tzdata==2022.7
 uritemplate==4.1.1
 urllib3==1.26.14
+virtualenv==20.24.5
